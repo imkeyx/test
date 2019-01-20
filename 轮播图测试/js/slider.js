@@ -19,24 +19,38 @@ var imgcount = wrapper.querySelectorAll(obj.img);
 var imgWidth = imgcount[0].offsetWidth;
 var star = setInterval(play,3000);
 var starAnimate;
+var btnAnimate;
 
 
 function play(){
-    if(index ==imgcount.length-1){
-        clearInterval(star);
-        wrapper.style.left = 0;
-        index = 1;
-        star = setInterval(play,3000);
+    
+    if(index == 0){        
+        animate(++index)
+        console.log(index)
     }else{
-       index++;
-       animate(index);
+       animate(index++);
+       console.log(index)
+       
     }
+    
                       
 }
 
 function animate(arg){
     //    var speed = flag? -50 : 50;
+       clearInterval(star);
        clearInterval(starAnimate);
+       if(index ==imgcount.length){
+        wrapper.style.left = 0;
+        console.log(index)
+        index = 0;
+        star = setInterval(play,0)
+        
+    }else{
+        star = setInterval(play,3000)
+        console.log(index)
+    } 
+       
        starAnimate = setInterval(go,100);
        function go(){
            var left = wrapper.offsetLeft;
@@ -44,18 +58,25 @@ function animate(arg){
                wrapper.style.left = left - speed + 'px';               
            }
        }
-       console.log(imgWidth)
-     
+       console.log(index)
+       
 }
 
 wrapper.onmouseover = function(){
     clearInterval(star);
-    btnl.onclick = function(){    
+    
+    btnl.onclick = function(){
         
+
     }
     
     btnr.onclick = function(){
+        clearInterval(btnAnimate);
         
+    }
+
+    function btnGo(){
+
     }
 }
 
