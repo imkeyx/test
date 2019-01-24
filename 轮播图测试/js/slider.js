@@ -3,7 +3,7 @@ function slide(obj){
     var parent = document.querySelector(obj.box);
     var wrapper = parent.firstElementChild;
     var bottomCtr = parent.querySelector(obj.bottomCtr).children;
-var speed = obj.speed||50;
+var speed = 50;
 var index = 0;
 var status= 0;
 var bottomBtnIndex = 0;
@@ -14,7 +14,7 @@ var btnl = document.querySelector(obj.btnl)||null;
 var btnr = document.querySelector(obj.btnr)||null;
 var imgcount = wrapper.querySelectorAll(obj.img);
 var imgWidth = imgcount[0].offsetWidth;
-var star = setInterval(play,3000);
+var star = setInterval(play,5000);
 var starAnimate;
 var btnAnimate;
 var bottomAnimate;
@@ -28,15 +28,17 @@ function play(){
     }
     animate(index);
     bottomBtnChange(index);  
+    console.log(index);
 }
     
 bottomBtnChange(index);                
 
 
 function animate(arg){
-    speed = flag?-obj.speed:obj.speed;
+    speed = flag?-50:50;
+    console.log(speed);
     clearInterval(starAnimate);
-    starAnimate = setInterval(go,10);
+    starAnimate = setInterval(go,100);
 
     function go(){
         var left = wrapper.offsetLeft;
@@ -57,6 +59,8 @@ parent.onmouseover = function(){
     //左按钮事件
     btnl.onclick = function(){
         flag = false;
+        speed = obj.speed?(flag?-obj.speed:obj.speed):(flag?-50:50);
+        
         if(index == 0){
             status = -imgWidth * (imgcount.length -1);
             index = -(imgcount.length-2);
@@ -71,6 +75,8 @@ parent.onmouseover = function(){
     //右按钮事件
     btnr.onclick = function(){
         flag =true;
+        speed = obj.speed?(flag?-obj.speed:obj.speed):(flag?-50:50);
+        
         if(index == -(imgcount.length - 1)){
             status = 0;
             index = -1;
@@ -86,7 +92,7 @@ parent.onmouseover = function(){
             var nowbtn = index;
             
             var nextbtn = getIndex(bottomCtr,this);
-            
+            console.log(nextbtn);
             for(var k = 0;k<bottomCtr.length;k++){
                 bottomCtr[k].className = '';
             }
@@ -103,15 +109,18 @@ parent.onmouseover = function(){
 
 function bottomBtnCon(now,next){
      clearInterval(bottomAnimate);
-     bottomAnimate = setInterval(bottomGo,10);
+     bottomAnimate = setInterval(bottomGo,100);
      var bottomSpeed = 0;
      var a = Math.abs(now);
      var b = next;
      var c = Math.abs(a - b);
+     
      if(a > b){
-         bottomSpeed = speed * c;
+         bottomSpeed = 50 * c;
+         
      }else if(a < b){
-         bottomSpeed = -speed * c;
+         bottomSpeed = -50 * c;
+         
      }
      function bottomGo(){
          var left = wrapper.offsetLeft;
