@@ -2,13 +2,14 @@ function slide(obj){
     
     var parent = document.querySelector(obj.box);
     var wrapper = parent.firstElementChild;
+    var bottomCtr = parent.querySelector(obj.bottomCtr).children;
 var speed = obj.speed||50;
 var index = 0;
 var status= 0;
-
+var bottomBtnIndex = 0;
+var flag = true;
 var img = wrapper.querySelectorAll(obj.img);
 wrapper.appendChild(img[0].cloneNode(true));
-
 var btnl = document.querySelector(obj.btnl)||null;
 var btnr = document.querySelector(obj.btnr)||null;
 var imgcount = wrapper.querySelectorAll(obj.img);
@@ -16,72 +17,146 @@ var imgWidth = imgcount[0].offsetWidth;
 var star = setInterval(play,3000);
 var starAnimate;
 var btnAnimate;
-
+var bottomAnimate;
 
 function play(){
-    
-    if(index == 0){        
-        animate(++index)
-        console.log(index)
+    if(index == -(imgcount.length - 1)){
+        status = 0;
+        index = -1
     }else{
-       animate(index++);
-       console.log(index)
-       
+        index -= 1;
     }
-    
-                      
+    animate(index);
+    bottomBtnChange(index);  
 }
+    
+bottomBtnChange(index);                
+
 
 function animate(arg){
-    //    var speed = flag? -50 : 50;
-       clearInterval(star);
-       clearInterval(starAnimate);
-       if(index ==imgcount.length){
-        wrapper.style.left = 0;
-        console.log(index)
-        index = 0;
-        star = setInterval(play,0)
-        
-    }else{
-        star = setInterval(play,3000)
-        console.log(index)
-    } 
+    speed = flag?-obj.speed:obj.speed;
+    clearInterval(starAnimate);
+    starAnimate = setInterval(go,10);
+
+    function go(){
+        var left = wrapper.offsetLeft;
+        if(left == imgWidth * index){
+            clearInterval(starAnimate);
+        }else{
+            status = parseInt(status) + parseInt(speed);
+            wrapper.style.left = status + 'px';
+        }
+    }
        
-       starAnimate = setInterval(go,100);
-       function go(){
-           var left = wrapper.offsetLeft;
-           if(left > -(imgWidth)*index){
-               wrapper.style.left = left - speed + 'px';               
-           }
-       }
-       console.log(index)
        
 }
 
-wrapper.onmouseover = function(){
+parent.onmouseover = function(){
     clearInterval(star);
     
+    //左按钮事件
     btnl.onclick = function(){
+        flag = false;
+        if(index == 0){
+            status = -imgWidth * (imgcount.length -1);
+            index = -(imgcount.length-2);
+        }else{
+            index +=1;           
+        }        
+        animate(index);
+        bottomBtnChange(index);  
         
-
+        
     }
-    
+    //右按钮事件
     btnr.onclick = function(){
-        clearInterval(btnAnimate);
-        
+        flag =true;
+        if(index == -(imgcount.length - 1)){
+            status = 0;
+            index = -1;
+        }else {
+            index -= 1;
+        }
+        animate(index);
+        bottomBtnChange(index);  
     }
 
-    function btnGo(){
+    for(var j = 0;j<bottomCtr.length;j++){
+        bottomCtr[j].onclick = function(){
+            var nowbtn = index;
+            
+            var nextbtn = getIndex(bottomCtr,this);
+            
+            for(var k = 0;k<bottomCtr.length;k++){
+                bottomCtr[k].className = '';
+            }
+            this.className = 'on';
+            bottomBtnCon(nowbtn,nextbtn);
+            index = -(getIndex(bottomCtr,this));
+            console.log(index);
 
+            
+        }
     }
+
+};
+
+function bottomBtnCon(now,next){
+     clearInterval(bottomAnimate);
+     bottomAnimate = setInterval(bottomGo,10);
+     var bottomSpeed = 0;
+     var a = Math.abs(now);
+     var b = next;
+     var c = Math.abs(a - b);
+     if(a > b){
+         bottomSpeed = speed * c;
+     }else if(a < b){
+         bottomSpeed = -speed * c;
+     }
+     function bottomGo(){
+         var left = wrapper.offsetLeft;
+         
+         if(left == imgWidth * (-b)){
+            clearInterval(bottomAnimate);
+         }else{
+             status = parseInt(status) + parseInt(bottomSpeed);
+             wrapper.style.left = status + 'px';
+             
+         }
+     }
+
 }
 
-wrapper.onmouseout = function(){
+function bottomBtnChange(arg){
+        if(index == -(imgcount.length - 1)){
+            bottomBtnIndex = 0
+        }else{
+            bottomBtnIndex = Math.abs(arg);
+        }
+    
+    for(var i = 0;i < imgcount.length-1;i++){
+        bottomCtr[i].className = '';
+    }
+    bottomCtr[bottomBtnIndex].className = 'on';
+}
+
+parent.onmouseout = function(){
+    flag = true;
     star = setInterval(play,3000)
 }
 
+function getIndex(arr,item){
+    for(var i in arr){
+        if(arr[i] == item)
+        break;
+    }
+    return i;
+}
 
 }
 
+
+
 export {slide};
+
 

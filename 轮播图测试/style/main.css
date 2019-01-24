@@ -21,6 +21,8 @@
     position: absolute;
     width: 3524px;
     overflow: hidden;
+    top: 0;
+    left: 0;
 }
 #list a{
     display: block;
